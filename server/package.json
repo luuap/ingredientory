@@ -8,15 +8,17 @@
   },
   "dependencies": {
     "cors": "^2.8.5",
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "mongoose": "^5.10.9"
   },
   "devDependencies": {
+    "mongodb-memory-server": "^6.9.2",
     "nodemon": "^2.0.5"
   },
   "eslintConfig": {
     "extends": "eslint:recommended",
     "parserOptions": {
-      "ecmaVersion": 6
+      "ecmaVersion": 9
     },
     "env": {
       "es6": true,

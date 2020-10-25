@@ -1,33 +1,55 @@
-const fs = require('fs');
 const express = require('express');
+const mongoose = require('mongoose');
+const { MongoMemoryServer } = require('mongodb-memory-server');
 
-// TODO only in development
+const { usersRoute, initUsers } = require('./routes/users');
+const { ingredientsRoute, initIngredients } = require('./routes/ingredients');
+
 const cors = require('cors');
-const rawdata = fs.readFileSync('test_data/test_data.json');
-const ingredients = JSON.parse(rawdata);
-console.log('Finished reading test file');
+
+// Start a mongodb dev server
+const mongod = new MongoMemoryServer({
+  instance: {
+    dbPath: './node_modules/.cache/mongodb-memory-server/mongodb-instance'
+  }
+});
+
+mongod.getUri().then(uri => {
+  mongoose.connect(
+    uri,
+    {
+      useNewUrlParser: true,
+      useUnifiedTopology: true
+    },
+    (err) => {
+      if (err) {
+        console.log('Cannot connect to database');
+      } else {
+        console.log('Connected to database');
+      }
+    }
+  );
+});
+
+const db = mongoose.connection;
+db.once('open', () => {
+  // TODO only in development mode
+  initUsers();
+  initIngredients();
+});
 
 const corsOptions = cors({
-  origin: 'http://localhost:3000', // whitelist localhost:3000 (dev server)
+  origin: 'http://localhost:3000', // whitelist the dev server
   optionsSuccessStatus: 200,
 });
 
-function findRecipes(query) {
-  const result = ingredients.find(ingredient => ingredient['ingredients'] === query);
-  return result ? result['recipes'] : 'Not found';
-}
-
 const app = express();
 
-app.get('/', corsOptions, (req, res) => {
-  const query = req.query.query;
+app.use('/users', corsOptions, usersRoute);
+app.use('/ingredients', corsOptions, ingredientsRoute);
 
-  if (query === undefined) {
-    res.send('Ready for query');
-  } else {
-    res.send(findRecipes(query));
-  }
-
-});
 
 app.listen('8080');
+
+// process.on('SIGTERM', () => console.log('SIGTERM'));
+// process.on('SIGINT', () => console.log('SIGINT'));
