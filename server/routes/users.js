@@ -12,7 +12,7 @@ usersRoute.get('/', async (req, res) => {
 function initUsers() {
   User.insertMany(
     [
-      { name: 'John doe' },
+      { name: 'John Doe' },
     ],
     () => console.log('DB seeded with users')
   );

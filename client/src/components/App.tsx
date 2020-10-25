@@ -8,6 +8,7 @@ function App() {
 
   const [data, setData] = useState<string[]>([]);
   
+  // TODO create an input with typeahead
   useEffect(() => {
     axios.get('http://localhost:8080/ingredients?query=escargot')
       .then(response => {
@@ -21,7 +22,7 @@ function App() {
 
   return (
     <div className="App">
-      <h1>Hello World</h1>
+      <h1>Ingredientory</h1>
       <ul>{ data.map((item) => <li key={uuid()}>{ item }</li>) }</ul>
     </div>
   );

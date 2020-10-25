@@ -18,8 +18,10 @@ mongod.getUri().then(uri => {
   mongoose.connect(
     uri,
     {
+      // setting following options will silence deprecation warnings, idrk what they do
       useNewUrlParser: true,
-      useUnifiedTopology: true
+      useUnifiedTopology: true,
+      useCreateIndex: true,
     },
     (err) => {
       if (err) {
