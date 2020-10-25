@@ -17,13 +17,16 @@
 - yarn v1.22.5
 
 ## Install dependencies
+
+In root project directory:
+
 ```sh
 yarn install
 ```
 
 ## Starting the app
 
-Both in server and client directories:
+cd to server and client directories in separate terminals:
 
 ```sh
 yarn start
@@ -38,7 +41,8 @@ yarn start
 - For multiple queries, separate parameters by a semi-colon <http://localhost:8080/ingredients?query=beef;carrot>
 - Available ingredients on test server: 
 `['apple', 'beef', 'carrots', 'duck', 'escargot', 'fudge', 'grapes', 'ham', 'ice cream', 'jalapenos', 'kale', 'linguine', 'mozzarella cheese', 'nutmeg', 'octopus', 'pineapple', 'quail', 'radish', 'salmon', 'tiger shrimp', 'udon noodles', 'vodka', 'whiskey', 'xanthan gum', 'yam', 'zucchini']`
-- If first time running server, it will download mongodb binaries, which is about 250mb
+- If first time running server, it will download mongodb binaries in node_modules/.cache, which is about 250mb
+- Install [JSON Formatter](https://chrome.google.com/webstore/detail/json-formatter/bcjindcccaagfpapjjmafapmmgkkhgoa) chrome extension for more readable results
 
 ## Building the client app
 
