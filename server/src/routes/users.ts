@@ -1,7 +1,7 @@
-const express = require('express');
-const User = require('../models/User');
+import express from 'express';
+import { User } from '../models/User';
 
-const usersRoute = express.Router();
+export const usersRoute = express.Router();
 
 usersRoute.get('/', async (req, res) => {
   const testQuery = await User.find({});
@@ -9,7 +9,7 @@ usersRoute.get('/', async (req, res) => {
 
 });
 
-function initUsers() {
+export function initUsers() {
   User.insertMany(
     [
       { name: 'John Doe' },
@@ -17,8 +17,3 @@ function initUsers() {
     () => console.log('DB seeded with users')
   );
 }
-
-module.exports = {
-  usersRoute,
-  initUsers,
-};

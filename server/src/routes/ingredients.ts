@@ -1,17 +1,19 @@
-const fs = require('fs');
-const express = require('express');
+import fs from 'fs';
+import express from 'express';
 
-const Ingredient = require('../models/Ingredient');
-const ingredientsRoute = express.Router();
+import { Ingredient } from '../models/Ingredient';
+
+export const ingredientsRoute = express.Router();
 
 ingredientsRoute.get('/', async (req, res) => {
-  const query = req.query.query.split(';');
+  const query = (req.query.query as string)?.split(';');
 
   if (query === undefined) {
     res.send('Ready for query');
   } else {
+
     const result = await Ingredient.aggregate([
-      { $match: { name: { $in: query } } }, // filter the ingredients
+      { $match: { name: { $in: query } } }, // filter the ingredients TODO: find a way to get unmatched queries
       {
         $group: { // separate the first result, group the rest (this is done in preparation for the $project stage)
           _id: 0,
@@ -37,16 +39,11 @@ ingredientsRoute.get('/', async (req, res) => {
 
 });
 
-function initIngredients() {
-  const rawData = fs.readFileSync('test_data/test_data.json');
-  const ingredients = JSON.parse(rawData);
+export function initIngredients() {
+  const rawData = fs.readFileSync('./test_data/test_data.json');
+  const ingredients = JSON.parse(rawData.toString());
   Ingredient.insertMany(
     ingredients,
     () => console.log('DB seeded with ingredients')
   );
 }
-
-module.exports = {
-  ingredientsRoute,
-  initIngredients,
-};

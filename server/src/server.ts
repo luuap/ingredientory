@@ -1,11 +1,10 @@
-const express = require('express');
-const mongoose = require('mongoose');
-const { MongoMemoryServer } = require('mongodb-memory-server');
+import express from 'express';
+import mongoose from 'mongoose';
+import cors from 'cors';
+import { MongoMemoryServer } from 'mongodb-memory-server';
 
-const { usersRoute, initUsers } = require('./routes/users');
-const { ingredientsRoute, initIngredients } = require('./routes/ingredients');
-
-const cors = require('cors');
+import { usersRoute, initUsers } from './routes/users';
+import { ingredientsRoute, initIngredients } from './routes/ingredients';
 
 // Start a mongodb dev server
 const mongod = new MongoMemoryServer({
@@ -14,7 +13,7 @@ const mongod = new MongoMemoryServer({
   }
 });
 
-mongod.getUri().then(uri => {
+mongod.getUri().then((uri: any) => {
   mongoose.connect(
     uri,
     {
@@ -23,7 +22,7 @@ mongod.getUri().then(uri => {
       useUnifiedTopology: true,
       useCreateIndex: true,
     },
-    (err) => {
+    (err: any) => {
       if (err) {
         console.log('Cannot connect to database');
       } else {
