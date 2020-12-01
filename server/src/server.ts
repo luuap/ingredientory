@@ -51,6 +51,3 @@ app.use('/ingredients', corsOptions, ingredientsRoute);
 
 
 app.listen('8080');
-
-// process.on('SIGTERM', () => console.log('SIGTERM'));
-// process.on('SIGINT', () => console.log('SIGINT'));

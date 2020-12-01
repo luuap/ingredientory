@@ -17,7 +17,7 @@ ingredientsRoute.get('/', async (req, res) => {
       {
         $group: { // separate the first result, group the rest (this is done in preparation for the $project stage)
           _id: 0,
-          recipes: { $push: '$recipes' },
+          recipes: { $push: '$recipes' }, // Note: recipes is a field in the documents returned by the previous stage 
           initial: { $first: '$recipes' },
         }
       },
@@ -34,7 +34,11 @@ ingredientsRoute.get('/', async (req, res) => {
       }
     ]);
 
-    res.send(result);
+    if (result.length === 0) {
+      res.send({ _id: 0, common_recipes: [] })
+    }
+
+    res.send(result[0]); // Note: aggregate function returns array of results, return only the first result
   }
 
 });
