@@ -22,10 +22,15 @@
     "analyze": "cross-env SKIP_PREFLIGHT_CHECK=true && react-scripts build && source-map-explorer 'build/static/js/*.js'",
     "start": "cross-env SKIP_PREFLIGHT_CHECK=true react-scripts start",
     "build": "cross-env SKIP_PREFLIGHT_CHECK=true GENERATE_SOURCEMAP=false && react-scripts build",
-    "test": "react-scripts test"
+    "test": "cross-env SKIP_PREFLIGHT_CHECK=true react-scripts test"
   },
   "eslintConfig": {
-    "extends": "react-app"
+    "extends": [
+      "react-app"
+    ],
+    "plugins": [
+      "react-hooks"
+    ]
   },
   "browserslist": {
     "production": [

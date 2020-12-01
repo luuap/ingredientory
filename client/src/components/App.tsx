@@ -1,26 +1,32 @@
 import React, { useState } from 'react';
-import { v4 as uuid } from 'uuid';
 import axios from 'axios';
+import { InputChangeEventHandler, MouseEventHandler } from '../types';
 
 import './App.scss';
 
 function App() {
 
-  const [query, setQuery] = useState<string>('zucchini;apple;carrots');
-  const [data, setData] = useState<string[]>([]);
+  const [query, setQuery] = useState<string>('zucchini, apple, carrots');
+  const [results, setResults] = useState<string[]>([]);
+  const [hasSearched, setHasSearched] = useState<boolean>(false);
 
-  function handleInputChange(event: any): void {
+  const handleInputChange: InputChangeEventHandler = (event) => {
     setQuery(event.target.value);
   }
 
-  function handleSubmit(event: any): void {
-    axios.get(`http://localhost:8080/ingredients?query=${query}`)
+  const handleSubmit: MouseEventHandler = () => {
+
+    if (query.length === 0) return;
+
+    axios.get(`http://localhost:8080/ingredients?query=${sanitizeQuery(query)}`)
       .then(response => {
         console.log(response.data);
-        setData(response.data[0].common_recipes); // TODO: return object instead of array of objects
+        setHasSearched(true);
+        setResults(response.data.common_recipes);
       })
       .catch(error => {
-        setData(['None found']);
+        console.error(error);
+        setResults(['None found']);
       });
   }
 
@@ -28,11 +34,26 @@ function App() {
   return (
     <>
       <h1>Ingredientory</h1>
-      <input type='text' value={ query } onChange={ handleInputChange }></input>
-      <button type='button' onClick={ handleSubmit }>Submit</button>
-      <ul>{ data.map((item) => <li key={ uuid() }>{ item }</li>) }</ul>
+      <input type='text' value={query} onChange={handleInputChange}></input>
+      <button type='button' onClick={handleSubmit}>Submit</button>
+      { hasSearched &&
+        (results.length > 0 ?
+          <>
+            <h3>Results:</h3>
+            <ul>{results.map((item) => <li key={item}>{item}</li>)}</ul>
+          </>
+          :
+          <h3>No results found</h3>
+        )
+      }
     </>
   );
+}
+
+function sanitizeQuery(query: string): string {
+  return query
+    .replace(/(?: *[,]+ *)+/g, ';') // matches comma or commas and spaces around them, then replace with semi colon 
+    .replace(/ {2,}/g, ' '); // matches series or two or more spaces, then replace with one space
 }
 
 export default App;
