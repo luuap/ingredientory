@@ -13,16 +13,19 @@ ingredientsRoute.get('/', async (req, res) => {
   } else {
 
     const result = await Ingredient.aggregate([
-      { $match: { name: { $in: query } } }, // filter the ingredients TODO: find a way to get unmatched queries
+      { $match: { name: { $in: query } } }, // filter the ingredients, check if name is in query string array
       {
-        $group: { // separate the first result, group the rest (this is done in preparation for the $project stage)
+        $group: { 
           _id: 0,
-          recipes: { $push: '$recipes' }, // Note: recipes is a field in the documents returned by the previous stage 
-          initial: { $first: '$recipes' },
+          // Note: $something is a field from the documents returned by the previous stage 
+          matched_ingredients: { $push: '$name' }, // array of all values with name field that resulted from previous stage
+          recipes: { $push: '$recipes' }, // array of matched recipes (array of arrays in this case)
+          initial: { $first: '$recipes' }, // separate the first result (this is done in preparation for $reduce operator in the $project stage)
         }
       },
       {
         $project: {
+          unmatched_ingredients: { $setDifference: [query, '$matched_ingredients'] }, // return only the elements that exist on the query array
           common_recipes: {
             $reduce: { // reduce funcction that takes intersection of recipes
               input: '$recipes',
@@ -35,7 +38,7 @@ ingredientsRoute.get('/', async (req, res) => {
     ]);
 
     if (result.length === 0) {
-      res.send({ _id: 0, common_recipes: [] })
+      res.send({ _id: 0, unmatched_ingredients: [], common_recipes: [] })
     }
 
     res.send(result[0]); // Note: aggregate function returns array of results, return only the first result
@@ -43,6 +46,7 @@ ingredientsRoute.get('/', async (req, res) => {
 
 });
 
+// Seed the database with each ingredient as a document
 export function initIngredients() {
   const rawData = fs.readFileSync('./test_data/test_data.json');
   const ingredients = JSON.parse(rawData.toString());

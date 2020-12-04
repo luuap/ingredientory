@@ -7,6 +7,7 @@ import './App.scss';
 function App() {
 
   const [query, setQuery] = useState<string>('zucchini, apple, carrots');
+  const [unmatches, setUnmatches] = useState<string[]>([]); // ingredients from user query that we did not find recipes for
   const [results, setResults] = useState<string[]>([]);
   const [hasSearched, setHasSearched] = useState<boolean>(false);
 
@@ -22,6 +23,7 @@ function App() {
       .then(response => {
         console.log(response.data);
         setHasSearched(true);
+        setUnmatches(response.data.unmatched_ingredients);
         setResults(response.data.common_recipes);
       })
       .catch(error => {
@@ -39,7 +41,7 @@ function App() {
       { hasSearched &&
         (results.length > 0 ?
           <>
-            <h3>Results:</h3>
+          <h3>Results: {unmatches?.length > 0 && `(No matches found for ${unmatches.map(x => `"${x}"`).join(', ')})`}</h3>
             <ul>{results.map((item) => <li key={item}>{item}</li>)}</ul>
           </>
           :
