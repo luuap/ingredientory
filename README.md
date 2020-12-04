@@ -38,7 +38,7 @@ yarn start
 
 ## Local REST server
 - Go to <http://localhost:8080/ingredients?query=escargot> to test the server
-- For multiple queries, separate parameters by a semi-colon <http://localhost:8080/ingredients?query=beef;carrot>
+- For multiple queries, separate parameters by a semi-colon <http://localhost:8080/ingredients?query=beef;carrots>
 - Available ingredients on test server: 
 `['apple', 'beef', 'carrots', 'duck', 'escargot', 'fudge', 'grapes', 'ham', 'ice cream', 'jalapenos', 'kale', 'linguine', 'mozzarella cheese', 'nutmeg', 'octopus', 'pineapple', 'quail', 'radish', 'salmon', 'tiger shrimp', 'udon noodles', 'vodka', 'whiskey', 'xanthan gum', 'yam', 'zucchini']`
 - If first time running server, it will download mongodb binaries in node_modules/.cache, which is about 250mb
