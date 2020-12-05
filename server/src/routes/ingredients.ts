@@ -47,11 +47,18 @@ ingredientsRoute.get('/', async (req, res) => {
 });
 
 // Seed the database with each ingredient as a document
-export function initIngredients() {
+export async function initIngredients(): Promise<void> {
   const rawData = fs.readFileSync('./test_data/test_data.json');
   const ingredients = JSON.parse(rawData.toString());
-  Ingredient.insertMany(
+
+  await Ingredient.deleteMany({}).then(() => {
+    console.log('Cleared ingredients');
+  });
+
+  await Ingredient.insertMany(
     ingredients,
-    () => console.log('DB seeded with ingredients')
-  );
+  ).then(async () => {
+    const count = await Ingredient.countDocuments({});
+    console.log(`DB seeded with ingredients, ${count} documents added`);
+  });
 }

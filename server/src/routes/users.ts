@@ -9,11 +9,18 @@ usersRoute.get('/', async (req, res) => {
 
 });
 
-export function initUsers() {
-  User.insertMany(
+export async function initUsers(): Promise<void> {
+
+  await User.deleteMany({}).then(() => {
+    console.log('Cleared users');
+  });
+
+  await User.insertMany(
     [
       { name: 'John Doe' },
     ],
-    () => console.log('DB seeded with users')
-  );
+  ).then(async () => {
+    const count = await User.countDocuments({});
+    console.log(`DB seeded with users, ${count} documents added`);
+  });
 }
