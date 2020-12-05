@@ -12,6 +12,7 @@
     "@types/react-dom": "^16.9.0",
     "@types/uuid": "^8.3.0",
     "axios": "^0.20.0",
+    "cross-env": "^7.0.2",
     "react": "^16.14.0",
     "react-dom": "^16.14.0",
     "react-scripts": "3.4.3",
@@ -45,7 +46,6 @@
     ]
   },
   "devDependencies": {
-    "cross-env": "^7.0.2",
     "source-map-explorer": "^2.5.0"
   }
 }
