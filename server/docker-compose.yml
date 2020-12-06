@@ -1,0 +1,10 @@
+# base docker-compose
+
+version: '3.8'
+services:
+  api: #TODO
+  db:
+    image: 'mongo:bionic'
+    container_name: 'mongo'
+    ports: 
+      - '27017:27017'
