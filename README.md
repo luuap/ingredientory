@@ -13,8 +13,8 @@
 
 ## Prerequisites
 
-- Node.js v12.19.0 
-- yarn v1.22.5
+- Node.js v14.15.0 
+- Yarn v1.22.5
 
 ## Install dependencies
 
@@ -24,16 +24,18 @@ In root project directory:
 yarn install
 ```
 
-## Starting the app
+## Starting the app (in development mode)
 
-cd to server and client directories in separate terminals:
+`cd` to server and client directories in separate terminals:
+
+First run the server and then the client.
 
 ```sh
-yarn start
+yarn dev
 ```
 
-- Client is running on localhost:3000
 - Server is running on localhost:8080
+- Client is running on localhost:3000
 
 
 ## Local REST server

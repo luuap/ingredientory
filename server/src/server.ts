@@ -21,9 +21,11 @@ const usingInMemoryDB = process.env.IN_MEMORY_DB === 'true';
 async function getDatabaseURI(): Promise<string> {
   if (isDevelopment && usingInMemoryDB) {
     // Start a mongodb dev server, downloads mongodb 4.0.14 // TODO: configure to get latest
-
-    // Use dynamic import because mongodb-memory-server might not be installed
+    // Use dynamic import because mongodb-memory-server is only used in development (also, not in docker container)
+    // using regular import will cause errors because we don't install it in production
     const MongoMemoryServer = await import('mongodb-memory-server').then(m => m.MongoMemoryServer);
+
+    // TODO: create this directory if not created: node_modules/.cache/mongodb-memory-server/mongodb-instance
 
     const mongod = new MongoMemoryServer({
       instance: {
@@ -55,7 +57,7 @@ getDatabaseURI().then(async mongoURI => {
       initIngredients();
     }
 
-    console.log(`Connected to ${db.host}:${db.port}/${db.name}.`)
+    console.log(`Connected to ${db.host}:${db.port}/${db.name}`)
     console.log(`Collections in this databse: ${Object.keys(db.collections)}`);
 
   });
