@@ -1,9 +1,0 @@
-# dev docker-compose that replaces or extends the base
-# example commands: docker-compose -f docker-compose.yml docker-compose.dev.yml up -d db
-
-version: '3.8'
-services:
-  db:
-    environment: 
-      MONGO_INITDB_ROOT_USERNAME: 'admin'
-      MONGO_INITDB_ROOT_PASSWORD: 'password'

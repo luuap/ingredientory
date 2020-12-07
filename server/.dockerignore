@@ -1,8 +1,15 @@
-node_modules
-*.log
-tsconfig.dev.json
-src/*
+# secrets
+.env
 
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
+# logs
+*.log*
+
+# stuff we do not need in production
+node_modules
+src
+test_data
+tsconfig.*
+
+# git related
+.git
+.gitignore
