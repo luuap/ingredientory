@@ -1,3 +1,4 @@
+import fs from 'fs';
 import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
@@ -21,22 +22,28 @@ const initDB = process.env.INIT_DB === 'true';
 
 async function getDatabaseURI(): Promise<string> {
   if (isDevelopment && usingInMemoryDB) {
-    // Start a mongodb dev server, downloads mongodb 4.0.14 // TODO: configure to get latest
-    // Use dynamic import because mongodb-memory-server is only used in development (also, not in docker container)
-    // using regular import will cause errors because we don't install it in production
+
+    // Start an in-memory mongodb dev server, downloads mongodb 4.0.14 // TODO: configure to get latest
+
+    // Note: use dynamic import because mongodb-memory-server is only used in development
+    //       using regular import will cause errors because we don't install it in production or staging
     const MongoMemoryServer = await import('mongodb-memory-server').then(m => m.MongoMemoryServer);
 
-    // TODO: create this directory if not created: node_modules/.cache/mongodb-memory-server/mongodb-instance
+    // Create the directory for the instance
+    const instanceDir = 'node_modules/.cache/mongodb-memory-server/mongodb-instance';
+    if (!fs.existsSync(instanceDir)) {
+      fs.mkdirSync(instanceDir);
+    }
 
     const mongod = new MongoMemoryServer({
       instance: {
-        dbPath: './node_modules/.cache/mongodb-memory-server/mongodb-instance'
+        dbPath: instanceDir
       }
     });
     return await mongod.getUri();
   }
 
-  const mongoURI = process.env.MONGO_URI; // TODO: create dockerfile for this
+  const mongoURI = process.env.MONGO_URI;
 
   if (mongoURI === undefined) {
     return Promise.reject('MONGO_URI environment variable is not set');
@@ -52,7 +59,7 @@ getDatabaseURI().then(async mongoURI => {
   const db = mongoose.connection;
   db.once('open', () => {
     
-    if (initDB) {
+    if (initDB || usingInMemoryDB) {
       // TODO: error handling
       initUsers();
       initIngredients();
