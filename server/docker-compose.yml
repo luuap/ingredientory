@@ -1,17 +1,13 @@
-# base docker-compose
+# base docker-compose which is set to production
 
-version: '3.8'
+version: "3.8"
 services:
   api:
     build: .
-    image: 'ingredientory_api:latest'
-    container_name: 'ingredientory_api'
+    image: ingredientory_api:latest
+    container_name: ingredientory_api
     environment: 
-      NODE_ENV: 'production'
+      NODE_ENV: production
+      MONGO_URI: "${MONGO_URI}" # contained in .env file
     ports:
-      - '8080:8080'
-  db:
-    image: 'mongo:bionic'
-    container_name: 'mongo'
-    # TODO: volumes
-    
+      - "8080:8080"

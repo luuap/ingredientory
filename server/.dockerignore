@@ -4,10 +4,9 @@
 # logs
 *.log*
 
-# stuff we do not need in production
+# stuff we do not need in production or stage
 node_modules
 src
-test_data
 tsconfig.*
 
 # git related

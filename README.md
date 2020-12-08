@@ -15,6 +15,7 @@
 
 - Node.js v14.15.0 
 - Yarn v1.22.5
+- (Optional) Docker Desktop
 
 ## Install dependencies
 
@@ -51,6 +52,10 @@ yarn dev
 ```sh
 yarn build
 ```
+
+## Running the docker containers for API and mongodb
+- `cd` to server/
+- run `yarn build && docker-compose -f docker-compose.yml -f docker-compose.stage.yml up -d`
 
 ## Attributions
 

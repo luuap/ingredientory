@@ -17,6 +17,7 @@ process.on('SIGINT', signal => {
 
 const isDevelopment = process.env.NODE_ENV === 'development';
 const usingInMemoryDB = process.env.IN_MEMORY_DB === 'true';
+const initDB = process.env.INIT_DB === 'true';
 
 async function getDatabaseURI(): Promise<string> {
   if (isDevelopment && usingInMemoryDB) {
@@ -51,7 +52,7 @@ getDatabaseURI().then(async mongoURI => {
   const db = mongoose.connection;
   db.once('open', () => {
     
-    if (isDevelopment) {
+    if (initDB) {
       // TODO: error handling
       initUsers();
       initIngredients();

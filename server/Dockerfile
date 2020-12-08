@@ -13,7 +13,7 @@ WORKDIR /usr/src/app
 #       will only be invalidated if either package.json or package-lock.json changes
 # A wildcard is used to ensure both package.json and package-lock.json are copied
 COPY package*.json ./
-RUN yarn install --production
+RUN yarn install --production && yarn cache clean
 
 # Copy over the rest of the files (.dockerignore will do its thing)
 COPY . .

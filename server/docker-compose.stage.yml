@@ -3,14 +3,19 @@
 #   only db: docker-compose -f docker-compose.yml -f docker-compose.stage.yml up -d db
 #   rebuild: docker-compose -f docker-compose.yml -f docker-compose.stage.yml up -d --build
 
-version: '3.8'
+version: "3.8"
 services:
   api:
     environment: 
-      MONGO_URI: 'mongodb://admin:password@mongo:27017/?authSource=admin' # hostname is the name of the container
+      MONGO_URI: "mongodb://${STAGE_USERNAME}:${STAGE_PASSWORD}@mongo:27017/?authSource=admin" # hostname is the name of the container
+      INIT_DB: "true"
   db:
+    image: mongo:bionic
+    container_name: mongo
     environment: 
-      MONGO_INITDB_ROOT_USERNAME: 'admin'
-      MONGO_INITDB_ROOT_PASSWORD: 'password'
+      MONGO_INITDB_ROOT_USERNAME: "${STAGE_USERNAME}"
+      MONGO_INITDB_ROOT_PASSWORD: "${STAGE_PASSWORD}" # TODO run docker-compose config
     ports: 
-      - '27017:27017' # ports are exposed during staging in case api is run outside of container network
+      - "27017:27017" # ports are exposed during staging in case api is run outside of container network
+    volumes: 
+      - /data/db # this is the path mongodb by default will write its data files
