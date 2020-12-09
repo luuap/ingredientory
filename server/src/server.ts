@@ -1,4 +1,5 @@
 import fs from 'fs';
+import { Server } from 'http';
 import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
@@ -6,15 +7,7 @@ import cors from 'cors';
 import { usersRoute, initUsers } from './routes/users';
 import { ingredientsRoute, initIngredients } from './routes/ingredients';
 
-process.on('SIGTERM', signal => {
-  console.log(`Process ${process.pid} received a SIGTERM signal`)
-  process.exit(0)
-})
-
-process.on('SIGINT', signal => {
-  console.log(`Process ${process.pid} has been interrupted`)
-  process.exit(0)
-})
+let server: Server;
 
 const isDevelopment = process.env.NODE_ENV === 'development';
 const usingInMemoryDB = process.env.IN_MEMORY_DB === 'true';
@@ -94,11 +87,33 @@ getDatabaseURI().then(async mongoURI => {
   app.use('/users', corsOptions, usersRoute);
   app.use('/ingredients', corsOptions, ingredientsRoute);
 
-  app.listen('8080');
+  server = app.listen('8080');
 
 }).catch(err => {
   console.error('Stopping app due to error:');
   console.error(err);
   process.exit(1);
-})
+});
 
+process.on('SIGINT', terminateApp);
+process.on('exit', exitHandler);
+
+
+function terminateApp(signalOrCode: NodeJS.Signals | number) {
+
+  if (typeof signalOrCode === 'string') {
+    console.log(`Process ${process.pid} received a ${signalOrCode} signal`);
+  }
+
+  server.close(() => {
+    mongoose.connection?.close(() => {
+      console.log('Disconnected from DB');
+    });
+    console.log('Closing app http server');
+  });
+
+}
+
+function exitHandler(exitCode: number) {
+  console.log(`Exiting with code ${exitCode}`);
+}
