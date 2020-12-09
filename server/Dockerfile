@@ -20,4 +20,4 @@ COPY . .
 
 EXPOSE 8080
 
-CMD [ "yarn", "prod" ]
+CMD [ "node", "build/server.js" ]

@@ -7,14 +7,16 @@ version: "3.8"
 services:
   api:
     environment: 
-      MONGO_URI: "mongodb://${STAGE_USERNAME}:${STAGE_PASSWORD}@mongo:27017/?authSource=admin" # hostname is the name of the container
+      MONGO_URI: "mongodb://${STAGE_USERNAME}:${STAGE_PASSWORD}@mongo:27017/test?authSource=admin" # hostname is the name of the container
       INIT_DB: "true"
+    depends_on:
+      - db
   db:
     image: mongo:bionic
     container_name: mongo
     environment: 
       MONGO_INITDB_ROOT_USERNAME: "${STAGE_USERNAME}"
-      MONGO_INITDB_ROOT_PASSWORD: "${STAGE_PASSWORD}" # TODO run docker-compose config
+      MONGO_INITDB_ROOT_PASSWORD: "${STAGE_PASSWORD}"
     ports: 
       - "27017:27017" # ports are exposed during staging in case api is run outside of container network
     volumes: 
