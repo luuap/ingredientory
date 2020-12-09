@@ -55,7 +55,11 @@ yarn build
 
 ## Running the docker containers for API and mongodb
 - `cd` to server/
-- run `yarn build && docker-compose -f docker-compose.yml -f docker-compose.stage.yml up -d`
+- run `yarn stage`
+
+## Required .env files with their fields
+- `.env.stage` with `STAGE_USERNAME` and `STAGE_PASSWORD`
+- `.env` with `MONGO_URI`
 
 ## Attributions
 
