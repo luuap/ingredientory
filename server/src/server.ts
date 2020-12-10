@@ -1,4 +1,3 @@
-import fs from 'fs';
 import { Server } from 'http';
 import express from 'express';
 import mongoose from 'mongoose';
@@ -10,39 +9,23 @@ import { ingredientsRoute, initIngredients } from './routes/ingredients';
 let server: Server;
 
 const isDevelopment = process.env.NODE_ENV === 'development';
-const usingInMemoryDB = process.env.IN_MEMORY_DB === 'true';
 const initDB = process.env.INIT_DB === 'true';
 
 async function getDatabaseURI(): Promise<string> {
-  if (isDevelopment && usingInMemoryDB) {
 
-    // Start an in-memory mongodb dev server, downloads mongodb 4.0.14 // TODO: configure to get latest
-
-    // Note: use dynamic import because mongodb-memory-server is only used in development
-    //       using regular import will cause errors because we don't install it in production or staging
-    const MongoMemoryServer = await import('mongodb-memory-server').then(m => m.MongoMemoryServer);
-
-    // Create the directory for the instance
-    const instanceDir = 'node_modules/.cache/mongodb-memory-server/mongodb-instance';
-    if (!fs.existsSync(instanceDir)) {
-      fs.mkdirSync(instanceDir);
+  // Poll every second during development to account for possible race condition where server 
+  // will try to connect before db has finished starting up due to unfavorable task scheduling or first set-up (downloading mongodb binaries)
+  if (isDevelopment) {
+    let seconds = 0;
+    while (process.env.MONGO_URI === undefined && seconds < 7200) { // 2h limit
+      await new Promise((resolve) => {
+        setTimeout(resolve, 1000);
+      });
+      seconds += 1;
     }
-
-    const mongod = new MongoMemoryServer({
-      instance: {
-        dbPath: instanceDir
-      }
-    });
-    return await mongod.getUri();
   }
 
-  const mongoURI = process.env.MONGO_URI;
-
-  if (mongoURI === undefined) {
-    return Promise.reject('MONGO_URI environment variable is not set');
-  }
-
-  return mongoURI;  
+  return process.env.MONGO_URI ?? Promise.reject('MONGO_URI environment variable is not set');
 }
 
 // Note: project configurations for top-level await does not play well with ts-node https://github.com/TypeStrong/ts-node/issues/1007
@@ -52,7 +35,7 @@ getDatabaseURI().then(async mongoURI => {
   const db = mongoose.connection;
   db.once('open', () => {
     
-    if (initDB || usingInMemoryDB) {
+    if (initDB) {
       // TODO: error handling
       initUsers();
       initIngredients();
