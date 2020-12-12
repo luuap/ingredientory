@@ -4,12 +4,11 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "dev": "cross-env NODE_ENV=development nodemon -r ./src/start-dev-server.ts src/server.ts",
-    "dev:api-only": "docker-compose -f docker-compose.stage.yml --env-file ./.env.stage up -d db && cross-env NODE_ENV=development nodemon src/server.ts && yarn clean-docker",
+    "dev": "cross-env NODE_ENV=development nodemon -r ./src/start-dev-db-server.ts src/start-api-server.ts",
+    "dev:api-only": "docker-compose -f docker-compose.stage.yml --env-file ./.env.stage up -d db && cross-env NODE_ENV=development DOTENV_CONFIG_PATH=.env.stage nodemon -r dotenv/config src/start-api-server.ts && yarn clean-docker",
     "build": "rimraf build/* && tsc --project tsconfig.prod.json",
     "stage": "yarn build && docker-compose -f docker-compose.yml -f docker-compose.stage.yml --env-file ./.env.stage up -d && yarn clean-docker",
-    "stage:api-only": "yarn build && cross-env NODE_ENV=production node -r dotenv/config build/server.js",
-    "clean-docker": "docker image prune -f && docker volume prune -f"
+    "stage:api-only": "yarn build && cross-env NODE_ENV=production node -r dotenv/config build/start-api-server.js",
   },
   "dependencies": {
     "cors": "^2.8.5",

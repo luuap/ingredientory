@@ -8,6 +8,7 @@
 node_modules
 src
 tsconfig.*
+**/start-dev-db-server.*
 
 # git related
 .git

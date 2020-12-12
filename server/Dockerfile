@@ -20,4 +20,4 @@ COPY . .
 
 EXPOSE 8080
 
-CMD [ "node", "build/server.js" ]
+CMD [ "node", "build/start-api-server.js" ]

@@ -4,10 +4,9 @@ version: "3.8"
 services:
   api:
     build: .
-    image: ingredientory_api:latest
+    image: ingredientory:latest
     container_name: ingredientory_api
     environment: 
       NODE_ENV: production
-      MONGO_URI: "${MONGO_URI}" # contained in .env file
     ports:
       - "8080:8080"
