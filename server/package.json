@@ -9,11 +9,14 @@
     "build": "rimraf build/* && tsc --project tsconfig.prod.json",
     "stage": "yarn build && docker-compose -f docker-compose.yml -f docker-compose.stage.yml --env-file ./.env.stage up -d && yarn clean-docker",
     "stage:api-only": "yarn build && cross-env NODE_ENV=production node -r dotenv/config build/start-api-server.js",
+    "prod": "yarn build && docker-compose up --build",
+    "clean-docker": "docker image prune -f && docker volume prune -f"
   },
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^4.17.1",
-    "mongoose": "^5.10.9"
+    "mongoose": "^5.10.9",
+    "serverless-http": "^2.6.0"
   },
   "devDependencies": {
     "@types/cors": "^2.8.8",

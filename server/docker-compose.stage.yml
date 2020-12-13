@@ -6,7 +6,10 @@
 version: "3.8"
 services:
   api:
-    image: ingredientory:latest
+    build:
+      context: .
+      target: stage
+    image: ingredientory:latest-stage
     environment: 
       MONGO_URI: "mongodb://${STAGE_USERNAME}:${STAGE_PASSWORD}@mongo:27017/test?authSource=admin" # hostname is the name of the container
       INIT_DB: "true"
