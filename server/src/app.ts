@@ -3,8 +3,8 @@ import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
 
-import { usersRoute, initUsers } from './routes/users';
-import { ingredientsRoute, initIngredients } from './routes/ingredients';
+import * as User from './routes/users';
+import * as Ingredient from './routes/ingredients';
 
 const initDB = process.env.INIT_DB === 'true';
 
@@ -37,41 +37,33 @@ export async function createApp(mongoURI: string): Promise<Ingredientory> {
 
   if (!app) {
 
-    const corsOptions = cors({
-      origin: 'http://localhost:3000', // whitelist the dev server
-      optionsSuccessStatus: 200,
-    });
+    console.log(`Connecting to ${mongoURI}...`);
+    const db = mongoose.createConnection(mongoURI, {
+      bufferCommands: false, // Disable mongoose buffering
+      bufferMaxEntries: 0, // and MongoDB driver buffering
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      useCreateIndex: true,
+    })
+      
+    await db.then(() => {
+      console.log(`Connected to ${db.host}:${db.port}/${db.name}`)
+    })
 
     const server = express();
 
-    server.use('/users', corsOptions, usersRoute);
-    server.use('/ingredients', corsOptions, ingredientsRoute);
+    server.use(cors()); // TODO: more granular cors options
+    server.use('/users', User.createRoute(db));
+    server.use('/ingredients', Ingredient.createRoute(db));
 
-    const db = mongoose.connection;
-    db.once('open', () => {
+    if (initDB) {
+      // TODO: error handling
+      console.log(`Initializing DB...`);
+      await User.init(db);
+      await Ingredient.init(db);
+    }
 
-      if (initDB) {
-        // TODO: error handling
-        initUsers();
-        initIngredients();
-      }
-
-      console.log(`Connected to ${db.host}:${db.port}/${db.name}`)
-      console.log(`Collections in this databse: ${Object.keys(db.collections)}`);
-
-    });
-
-    // Note: need to initialize callbacks before calling connection with await
-    //       because if done after, mongoose would have been connected with no callbacks defined yet
-    await mongoose.connect(
-      mongoURI,
-      {
-        // setting following options will silence deprecation warnings, idrk what they do
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-        useCreateIndex: true,
-      }
-    );
+    console.log(`Collections in this databse: ${Object.keys(db.collections)}`);
 
     app = new Ingredientory(server, db);
   }

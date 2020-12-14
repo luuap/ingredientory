@@ -1,26 +1,41 @@
-import express from 'express';
-import { User } from '../models/User';
+import express, { Router } from 'express';
+import { Connection } from 'mongoose'
+import { User } from '../schemas/User';
 
-export const usersRoute = express.Router();
+export function createRoute(connection: Connection): Router {
 
-usersRoute.get('/', async (req, res) => {
-  const testQuery = await User.find({});
-  res.send(testQuery);
+  const route = express.Router();
+  const userModel = connection.model(User.name, User.schema, User.collection);
 
-});
+  route.get('/', async (req, res) => {
+    const testQuery = await userModel.find({});
+    res.send(testQuery);
+  });
 
-export async function initUsers(): Promise<void> {
+  route.get('/', async (req, res) => {
+    const testQuery = await userModel.find({});
+    res.send(testQuery);
 
-  await User.deleteMany({}).then(() => {
+  });
+
+  return route;
+
+}
+
+export async function init(connection: Connection): Promise<void> {
+
+  const userModel = connection.model(User.name, User.schema, User.collection);
+
+  await userModel.deleteMany({}).then(() => {
     console.log('Cleared users');
   });
 
-  await User.insertMany(
+  await userModel.insertMany(
     [
       { name: 'John Doe' },
     ],
   ).then(async () => {
-    const count = await User.countDocuments({});
+    const count = await userModel.countDocuments({});
     console.log(`DB seeded with users, ${count} documents added`);
   });
 }

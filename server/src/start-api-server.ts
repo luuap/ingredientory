@@ -12,7 +12,6 @@ async function getDatabaseURI(): Promise<string> {
   if (isDevelopment) {
     let seconds = 0;
     while (process.env.MONGO_URI === undefined && seconds < 7200) { // 2h limit
-      console.log(process.env.MONGO_URI);
       await new Promise((resolve) => {
         setTimeout(resolve, 1000);
       });
