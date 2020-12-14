@@ -2,7 +2,7 @@
 
 ## Project Description
 
-[Project Link](ingredientory.web.app)
+[Project Link](https://ingredientory.web.app/)
 
 ### Front-end
 - React in Typescript and Sass, using create-react-app
