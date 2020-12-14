@@ -4,6 +4,8 @@ import { InputChangeEventHandler, MouseEventHandler } from '../types';
 
 import './App.scss';
 
+const API_URI = process.env.NODE_ENV === 'production' ? process.env.REACT_APP_API_URI : 'http://localhost:8080';
+
 function App() {
 
   const [query, setQuery] = useState<string>('zucchini, apple, carrots');
@@ -19,7 +21,7 @@ function App() {
 
     if (query.length === 0) return;
 
-    axios.get(`http://localhost:8080/ingredients?query=${sanitizeQuery(query)}`)
+    axios.get(`${API_URI}/ingredients?query=${sanitizeQuery(query)}`)
       .then(response => {
         console.log(response.data);
         setHasSearched(true);
