@@ -2,14 +2,20 @@
 
 ## Project Description
 
-- Typescript
-- Sass
+[Project Link](ingredientory.web.app)
+
+### Front-end
+- React in Typescript and Sass, using create-react-app
+
+### Back-end
+- AWS Gateway API, AWS Lambda using container images, and MongoDB Atlas
 
 ## VSCode extensions
 
 - dsznajder.es7-react-js-snippets
 - dbaeumer.vscode-eslint
 - ms-vscode.atom-keybindings
+- ms-azuretools.vscode-docker
 
 ## Prerequisites
 
@@ -57,8 +63,11 @@ yarn build
 - `cd` to server/
 - run `yarn stage`
 
-## Required .env files with their fields
-- `.env.stage` with `STAGE_USERNAME` and `STAGE_PASSWORD`
+## Required .env files with their fields for client
+- `.env.production` with `REACT_APP_API_URI`
+
+## Required .env files with their fields for server
+- `.env.production` with `STAGE_USERNAME` and `STAGE_PASSWORD`
 - `.env` with `MONGO_URI`
 
 ## Attributions
